@@ -1,0 +1,17 @@
+{
+  "name": "thorin-plugin-cachet",
+  "author": "UNLOQ Systems",
+  "version": "1.0.1",
+  "dependencies": {},
+  "description": "Thorin.js cachet incident & metrics",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thorinjs/Thorin-plugin-cachet"
+  },
+  "homepage": "http://thorinjs.com",
+  "bugs": {
+    "url": "https://github.com/Thorinjs/Thorin-plugin-cachet/issues"
+  }
+}
