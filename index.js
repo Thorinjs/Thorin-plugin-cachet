@@ -18,15 +18,18 @@ module.exports = function (thorin, opt, pluginName) {
     },
     // This is the metrics section, where we update metrics. Set this to false to disable completely.
     // Default metric data:
-    //  key: - > the key inside metrics[] is the metric suffix
+    //        array of:
+    //          -> id -> the metric id
+    //          -> key -> the metric suffix
     //          -> name -> the metric public name
     //          -> description -> the public description
     //          -> default -> the default value
     //          -> type=avg/sum -> the metric type, default sum
     //          -> threshold -> the number of minutes between metric points, default 1
     //          -> places -> the number of decimal places
-    metrics: {}
+    metrics: []
   };
+
   opt = thorin.util.extend(defaultOpt, opt);
   let logger = thorin.logger(opt.logger);
   /**
@@ -65,9 +68,11 @@ module.exports = function (thorin, opt, pluginName) {
       });
     } else {
       metricId = metric;
-      if (typeof metric === 'string' && typeof opt.metrics[metric] !== 'undefined') {
-        if (opt.metrics[metric].id) {
-          metricId = opt.metrics[metric].id;
+      if(typeof metricId === 'string' && opt.metrics instanceof Array) {
+        for(let i=0; i < opt.metrics.length; i++) {
+          if(opt.metrics[i].name == metricId) {
+            metricId = opt.metrics[i].id;
+          }
         }
       }
     }
@@ -124,12 +129,12 @@ module.exports = function (thorin, opt, pluginName) {
    * Marks the component as operational again, closing any
    * incident.
    * */
-  pluginObj.setOperational = () => {
+  pluginObj.setOperational = (component) => {
     let calls = [],
       incident = null,
       componentId;
     calls.push(() => {
-      return ensure.component(opt.component).then((id) => componentId = id);
+      return ensure.component(component || opt.component).then((id) => componentId = id);
     });
     calls.push(() => {
       return api.$put(`/components/${componentId}`, {
@@ -165,8 +170,9 @@ module.exports = function (thorin, opt, pluginName) {
     let calls = [],
       incident = null,
       componentId;
+    let component = (typeof name === 'object' && name) ? name : opt.component;
     calls.push(() => {
-      return ensure.component(opt.component).then((id) => componentId = id);
+      return ensure.component(component).then((id) => componentId = id);
     });
 
     /* check if we create incident or just update */
@@ -196,8 +202,9 @@ module.exports = function (thorin, opt, pluginName) {
     let calls = [],
       incident = null,
       componentId;
+    let component = (typeof name === 'object' && name) ? name : opt.component;
     calls.push(() => {
-      return ensure.component(opt.component).then((id) => componentId = id);
+      return ensure.component(component).then((id) => componentId = id);
     });
 
     /* check if we create incident or just update */
@@ -226,8 +233,9 @@ module.exports = function (thorin, opt, pluginName) {
     let calls = [],
       incident = null,
       componentId;
+    let component = (typeof name === 'object' && name) ? name : opt.component;
     calls.push(() => {
-      return ensure.component(opt.component).then((id) => componentId = id);
+      return ensure.component(component).then((id) => componentId = id);
     });
 
     /* check if we create incident or just update */
